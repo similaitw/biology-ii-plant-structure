@@ -1,0 +1,73 @@
+name: Sync binary assets from Vercel
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/sync-assets-from-vercel.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download binary assets from Vercel
+        env:
+          BASE_URL: https://biology-ii-plant-structure-vercel-d.vercel.app
+        run: |
+          set -euo pipefail
+
+          files=(
+            "dist/assets/mindmaps/mindmap-1.png"
+            "dist/assets/mindmaps/mindmap-2.png"
+            "dist/assets/mindmaps/mindmap-3.png"
+            "dist/assets/mindmaps/mindmap-4.png"
+            "dist/assets/mindmaps/mindmap-5.png"
+            "dist/assets/mindmaps/mindmap-6.png"
+            "dist/assets/textbook/page-34.png"
+            "dist/assets/textbook/page-35.png"
+            "dist/assets/textbook/page-37.png"
+            "dist/assets/textbook/page-39.png"
+            "dist/assets/textbook/page-40.png"
+            "dist/assets/textbook/page-42.png"
+            "dist/assets/textbook/page-44.png"
+            "dist/assets/textbook/page-50.png"
+            "dist/assets/textbook/page-52.png"
+            "dist/assets/textbook/page-53.png"
+            "dist/assets/textbook/page-55.png"
+            "dist/pdfs/interactive-workbook.pdf"
+            "dist/pdfs/textbook-ch2.pdf"
+            "dist/pdfs/teacher-guide-ch2.pdf"
+            "dist/pdfs/mindmaps-6pages.pdf"
+          )
+
+          for f in "${files[@]}"; do
+            mkdir -p "$(dirname "$f")"
+            echo "Downloading $f"
+            curl --fail --location --retry 3 --retry-delay 2               "$BASE_URL/${f#dist/}"               --output "$f"
+            test -s "$f"
+          done
+
+          echo "Downloaded files:"
+          du -h dist/assets/mindmaps/* dist/assets/textbook/* dist/pdfs/*
+
+      - name: Commit recovered assets
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dist/assets dist/pdfs
+
+          if git diff --cached --quiet; then
+            echo "No asset changes to commit."
+            exit 0
+          fi
+
+          git commit -m "Add binary assets recovered from Vercel"
+          git push origin HEAD:main
