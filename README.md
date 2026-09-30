@@ -10,15 +10,16 @@
 ## 專案結構
 
 `dist/index.html`、`dist/styles.css`、`dist/app.js` 為網站程式碼。
-完整部署 bundle 另包含：
+
+完整部署資產已納入 repository：
 
 - `dist/assets/mindmaps/`：6 張心智圖
 - `dist/assets/textbook/`：11 張課本必要圖版
 - `dist/pdfs/`：4 份教材 PDF
+- `ASSET-MANIFEST.json`：資產檔名、大小與 SHA-256
 
-所有二進位資產的預期檔名、大小與 SHA-256 都列在 `ASSET-MANIFEST.json`。
-
-> 目前 ChatGPT 的 GitHub 寫入連接器只支援 UTF-8 文字內容，因此此 repo 已推送網站程式碼與資產 manifest；大型 PNG/PDF 二進位檔需使用完整部署 bundle 上傳。
+二進位資產已由 Vercel production deployment 回填至 GitHub；同步流程保留於
+`.github/workflows/sync-assets-from-vercel.yml`。
 
 ## 本機預覽
 
@@ -29,3 +30,12 @@ python -m http.server 8000 -d dist
 ## Vercel
 
 `vercel.json` 已將 `outputDirectory` 設為 `dist`。
+
+目前 production deployment：
+https://biology-ii-plant-structure-vercel-d.vercel.app
+
+Vercel Drop 專案名稱：
+`biology-ii-plant-structure-vercel-drop`
+
+GitHub repository：
+https://github.com/similaitw/biology-ii-plant-structure
