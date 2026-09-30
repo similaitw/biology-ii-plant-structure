@@ -1,0 +1,1 @@
+document.querySelectorAll('[data-answer]').forEach(btn=>btn.addEventListener('click',()=>{const el=document.getElementById(btn.dataset.answer);el.classList.toggle('open');btn.textContent=el.classList.contains('open')?'收起詳解':'查看詳解'}));
