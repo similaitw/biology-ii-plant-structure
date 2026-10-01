@@ -39,3 +39,5 @@ Vercel Drop 專案名稱：
 
 GitHub repository：
 https://github.com/similaitw/biology-ii-plant-structure
+
+<!-- vercel-git-autodeploy-check: 2026-10-01 -->
